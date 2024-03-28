@@ -10,11 +10,11 @@
 #include <memory>
 #include <Eigen/Core>
 
-#include <ros/ros.h>
-#include <ros/package.h>
-#include <nav_msgs/Path.h>
-#include <geometry_msgs/Quaternion.h> 
-#include <geometry_msgs/PoseStamped.h> 
+// #include <ros/ros.h>
+// #include <ros/package.h>
+#include "nav_msgs/msg/path.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 #include <visualization_msgs/Marker.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/Odometry.h>
@@ -46,13 +46,13 @@ public:
   void GetTrajectoryTxt(std::vector<std::vector<std::string> >& lines, TrajectoryType trajectory_type);
 
 private:
-  ros::NodeHandle nh;
+  rclcpp::NodeHandle nh;
   std::string frame_id;
-  ros::Publisher odom_pose_pub;
-  ros::Publisher kcc_pose_pub;
-  ros::Publisher frame_pose_pub;
-  ros::Publisher map_pub;
-  ros::Publisher image_pub;
+  rclcpp::Publisher odom_pose_pub;
+  rclcpp::Publisher kcc_pose_pub;
+  rclcpp::Publisher frame_pose_pub;
+  rclcpp::Publisher map_pub;
+  rclcpp::Publisher image_pub;
 
   nav_msgs::Path odom_pose_msgs;
   nav_msgs::Path kcc_pose_msgs;

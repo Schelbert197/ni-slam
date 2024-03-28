@@ -1,10 +1,11 @@
 #include "visualization.h"
+#include "rclcpp/rclcpp.hpp"
 
 #include <algorithm>
 #include <numeric>
-#include <tf/transform_broadcaster.h> 
+#include "tf2_ros/transform_broadcaster.h"
 #include <tf/tf.h> 
-#include<time.h>
+#include <time.h>
 
 #include "utils.h"
 
@@ -19,7 +20,7 @@ Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
   map_pub = nh.advertise<nav_msgs::OccupancyGrid>(config.map_topic, 1);
   image_pub = nh.advertise<sensor_msgs::Image>(config.image_topic, 1);
 
-  ros::Time current_time = ros::Time::now();
+  rclcpp::Time current_time = rclcpp::Time::now();
   odom_pose_msgs.header.stamp = current_time; 
 	odom_pose_msgs.header.frame_id = frame_id; 
   kcc_pose_msgs.header.stamp = current_time; 
@@ -33,14 +34,14 @@ Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
 
 void Visualizer::AddNewPoseToPath(
     Eigen::Vector3d& pose, double time_double, nav_msgs::Path& path, std::string& id){
-  ros::Time current_time = ros::Time::now();
+  rclcpp::Time current_time = rclcpp::Time::now();
 
   geometry_msgs::PoseStamped pose_stamped; 
   pose_stamped.pose.position.x = pose(0); 
   pose_stamped.pose.position.y = pose(1); 
   pose_stamped.pose.position.z = 0; 
 
-  geometry_msgs::Quaternion q = tf::createQuaternionMsgFromYaw(pose(2)); 
+  tf2::Quaternion q = tf2::createQuaternionMsgFromYaw(pose(2)); 
   pose_stamped.pose.orientation.x = q.x; 
   pose_stamped.pose.orientation.y = q.y; 
   pose_stamped.pose.orientation.z = q.z; 
@@ -49,7 +50,7 @@ void Visualizer::AddNewPoseToPath(
   if(time_double < 0){
     pose_stamped.header.stamp = current_time; 
   }else{
-    pose_stamped.header.stamp = ros::Time().fromSec(time_double);
+    pose_stamped.header.stamp = rclcpp::Time().fromSec(time_double);
     int64_t sec = static_cast<int64_t>(pose_stamped.header.stamp.sec);
     int64_t nsec = static_cast<int64_t>(pose_stamped.header.stamp.nsec);
     std::string s_time = std::to_string(sec) + "." + std::to_string(nsec);
@@ -152,7 +153,7 @@ void Visualizer::UpdateMap(MapBuilder& map_builder){
 void Visualizer::PublishImage(cv::Mat& image, double time_double){
   sensor_msgs::ImagePtr image_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg();
   if(time_double > 0){
-    image_msg->header.stamp = ros::Time().fromSec(time_double);
+    image_msg->header.stamp = rclcpp::Time().fromSec(time_double);
   }
   image_pub.publish(image_msg);
 }

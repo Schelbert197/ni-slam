@@ -7,8 +7,9 @@
 #include <Eigen/Dense>
 #include <opencv2/highgui/highgui.hpp>
 
-#include <ros/ros.h>
-#include <ros/package.h>
+// #include <ros/ros.h>
+// #include <ros/package.h>
+#include "rclcpp/rclcpp.hpp"
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -30,8 +31,8 @@
 using namespace std;
 
 int main(int argc, char** argv){
-  ros::init(argc, argv, "build_map");
-  ros::start(); 
+  rclcpp::init(argc, argv, "build_map");
+  rclcpp::start(); 
 
   std::string config_file = argv[1];
   Configs configs(config_file);
@@ -44,7 +45,7 @@ int main(int argc, char** argv){
   Aligned<std::vector, Eigen::Vector3d> frame_poses;
   std::vector<double> timestamps;
   Eigen::Vector3d new_kcc_pose; 
-  ros::Rate loop_rate(50); 
+  rclcpp::Rate loop_rate(50); 
   std::vector<std::vector<std::string> > frame_lines;
   size_t dataset_length = dataset.GetDatasetLength();
 

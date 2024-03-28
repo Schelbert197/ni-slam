@@ -3,17 +3,26 @@ project(ni_slam)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-find_package(catkin REQUIRED COMPONENTS
-  cv_bridge
-  # eigen_conversions
-  geometry_msgs
-  image_transport
-  nav_msgs
-  roscpp
-  rospy
-  std_msgs
-  sensor_msgs
-)
+##### REPLACING WITH AMENT VERSION #######
+# find_package(catkin REQUIRED COMPONENTS
+#   cv_bridge
+#   # eigen_conversions
+#   geometry_msgs
+#   image_transport
+#   nav_msgs
+#   roscpp
+#   rospy
+#   std_msgs
+#   sensor_msgs
+# )
+find_package(cv_bridge)
+find_package(geometry_msgs)
+find_package(image_transport)
+find_package(nav_msgs REQUIRED)
+find_package(rclcpp)
+find_package(rclpy)
+find_package(std_msgs)
+find_package(sensor_msgs)
 
 find_package(OpenCV 4.2 REQUIRED)
 find_package(OpenMP REQUIRED)
@@ -32,12 +41,16 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-catkin_package(
- INCLUDE_DIRS include
- LIBRARIES correlation_flow
- CATKIN_DEPENDS geometry_msgs visualization_msgs image_transport nav_msgs roscpp rospy std_msgs
-#  DEPENDS system_lib
-)
+##### REPLACING WITH AMENT VERSION #######
+# catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES correlation_flow
+#  CATKIN_DEPENDS geometry_msgs visualization_msgs image_transport nav_msgs roscpp rospy std_msgs
+# #  DEPENDS system_lib
+# )
+ament_export_include_directories(include)
+ament_export_libraries(correlation_flow)
+# ament_target_dependencies(main geometry_msgs visualization_msgs image_transport nav_msgs roscpp rospy std_msgs)
 
 ###########
 ## Build ##
@@ -45,7 +58,7 @@ catkin_package(
 
 include_directories(
   ${OpenCV_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
+  # ${catkin_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/include
   ${EIGEN3_INCLUDE_DIR}
   ${YAML_CPP_INCLUDE_DIR}
@@ -79,7 +92,7 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${CERES_LIBRARIES}
   yaml-cpp
   ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
+  # ${catkin_LIBRARIES}
   ${VTK_LIBRARIES}
 )
 
@@ -87,3 +100,4 @@ target_link_libraries(${PROJECT_NAME}_lib
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
 
+ament_package()

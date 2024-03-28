@@ -15,7 +15,8 @@
 #include "nav_msgs/msg/path.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "geometry_msgs/msg/pose_stamped.hpp"
-#include <visualization_msgs/Marker.h>
+// #include <visualization_msgs/Marker.h>
+#include "visualization_msgs/msg/marker.hpp"
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/Odometry.h>
 #include <cv_bridge/cv_bridge.h>

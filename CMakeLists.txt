@@ -50,7 +50,7 @@ endif()
 # )
 ament_export_include_directories(include)
 ament_export_libraries(correlation_flow)
-# ament_target_dependencies(main geometry_msgs visualization_msgs image_transport nav_msgs roscpp rospy std_msgs)
+ament_target_dependencies(visualization geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
 
 ###########
 ## Build ##
@@ -94,6 +94,12 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${Boost_LIBRARIES}
   # ${catkin_LIBRARIES}
   ${VTK_LIBRARIES}
+  # nav_msgs
+  # geometry_msgs
+  # visualization_msgs
+  # image_transport
+  # nav_msgs
+  # std_msgs
 )
 
 ## Declare a C++ executable

@@ -23,7 +23,7 @@
 #include "thread_publisher.h"
 #include "visualization.h"
 
-#include<typeinfo>
+#include <typeinfo>
 #include <sys/io.h>
 #include <sys/dir.h>
 #include <time.h>

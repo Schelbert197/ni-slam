@@ -3,6 +3,10 @@ project(ni_slam)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 ##### REPLACING WITH AMENT VERSION #######
 # find_package(catkin REQUIRED COMPONENTS
 #   cv_bridge
@@ -17,6 +21,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 # )
 find_package(cv_bridge)
 find_package(geometry_msgs)
+find_package(visualization_msgs)
 find_package(image_transport)
 find_package(nav_msgs REQUIRED)
 find_package(rclcpp)
@@ -48,13 +53,51 @@ endif()
 #  CATKIN_DEPENDS geometry_msgs visualization_msgs image_transport nav_msgs roscpp rospy std_msgs
 # #  DEPENDS system_lib
 # )
+
+# from CATKIN_DEPENDS
+ament_export_dependencies(geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
+# from catkin INCLUDE_DIRS
 ament_export_include_directories(include)
+# from LIBRARIES
 ament_export_libraries(correlation_flow)
-ament_target_dependencies(visualization geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
 
 ###########
 ## Build ##
 ###########
+# add_executable(slam src/slam.cpp)
+# ament_target_dependencies(slam rclcpp std_msgs std_srvs tf2 tf2_ros visualization_msgs nuturtlebot_msgs nav_msgs)
+# target_link_libraries(slam turtlelib::turtlelib)
+
+# add_executable(landmarks src/landmarks.cpp)
+# ament_target_dependencies(landmarks rclcpp std_msgs std_srvs tf2 tf2_ros visualization_msgs nuturtlebot_msgs nav_msgs)
+# target_link_libraries(landmarks turtlelib::turtlelib)
+
+# target_include_directories(slam PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
+# target_compile_features(slam PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+# target_include_directories(landmarks PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
+# target_compile_features(landmarks PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+# install(TARGETS
+#   visualization
+#   utils
+#   timer
+#   thread_publisher
+#   map
+#   map_stitcher
+#   map_builder
+#   loop_closure
+#   frame
+#   edge
+#   dataset
+#   correlation_flow
+#   camera
+#   optimization_2d/pose_graph_2d
+#   DESTINATION lib/${PROJECT_NAME})
 
 include_directories(
   ${OpenCV_INCLUDE_DIRS}
@@ -66,6 +109,11 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   ${VTK_INCLUDE_DIRS}
 )
+# ament_export_include_directories(
+#   ${PROJECT_SOURCE_DIR}/include 
+#   OpenCV
+#   Eigen3
+#   nav_msgs)
 
 add_library(${PROJECT_NAME}_lib SHARED
   src/optimization_2d/pose_graph_2d.cc
@@ -94,16 +142,18 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${Boost_LIBRARIES}
   # ${catkin_LIBRARIES}
   ${VTK_LIBRARIES}
-  # nav_msgs
-  # geometry_msgs
-  # visualization_msgs
-  # image_transport
-  # nav_msgs
-  # std_msgs
+  nav_msgs
+  geometry_msgs
+  visualization_msgs
+  image_transport
+  nav_msgs
+  std_msgs
 )
+ament_export_libraries(correlation_flow)
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
+ament_target_dependencies(${PROJECT_NAME} geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
 
 ament_package()

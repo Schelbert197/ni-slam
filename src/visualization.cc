@@ -15,10 +15,10 @@ using namespace std;
 
 Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
   // odom_pose_pub = nh.advertise<nav_msgs::Path>(config.odom_pose_topic, 10);
-  kcc_pose_pub = nh.advertise<nav_msgs::Path>(config.kcc_pose_topic, 10);
-  frame_pose_pub = nh.advertise<nav_msgs::Path>(config.frame_pose_topic, 10);
-  map_pub = nh.advertise<nav_msgs::OccupancyGrid>(config.map_topic, 1);
-  image_pub = nh.advertise<sensor_msgs::Image>(config.image_topic, 1);
+  kcc_pose_pub = nh.advertise<nav_msgs::msg::Path>(config.kcc_pose_topic, 10);
+  frame_pose_pub = nh.advertise<nav_msgs::msg::Path>(config.frame_pose_topic, 10);
+  map_pub = nh.advertise<nav_msgs::msg::OccupancyGrid>(config.map_topic, 1);
+  image_pub = nh.advertise<sensor_msgs::msg::Image>(config.image_topic, 1);
 
   rclcpp::Time current_time = rclcpp::Time::now();
   odom_pose_msgs.header.stamp = current_time; 
@@ -33,10 +33,10 @@ Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
 }
 
 void Visualizer::AddNewPoseToPath(
-    Eigen::Vector3d& pose, double time_double, nav_msgs::Path& path, std::string& id){
+    Eigen::Vector3d& pose, double time_double, nav_msgs::msg::Path& path, std::string& id){
   rclcpp::Time current_time = rclcpp::Time::now();
 
-  geometry_msgs::PoseStamped pose_stamped; 
+  geometry_msgs::msg::PoseStamped pose_stamped; 
   pose_stamped.pose.position.x = pose(0); 
   pose_stamped.pose.position.y = pose(1); 
   pose_stamped.pose.position.z = 0; 
@@ -80,7 +80,7 @@ void Visualizer::UpdateFramePose(Aligned<std::vector, Eigen::Vector3d>& frame_po
 }
 
 void Visualizer::ConvertMapToOccupancyMsgs(
-    OccupancyData& map, nav_msgs::OccupancyGrid& msgs){
+    OccupancyData& map, nav_msgs::msg::OccupancyGrid& msgs){
   if(map.size() < 1) return;
 
   // fill in metadata
@@ -151,7 +151,7 @@ void Visualizer::UpdateMap(MapBuilder& map_builder){
 }
 
 void Visualizer::PublishImage(cv::Mat& image, double time_double){
-  sensor_msgs::ImagePtr image_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg();
+  sensor_msgs::msg::ImagePtr image_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg();
   if(time_double > 0){
     image_msg->header.stamp = rclcpp::Time().fromSec(time_double);
   }
@@ -160,7 +160,7 @@ void Visualizer::PublishImage(cv::Mat& image, double time_double){
 
 void Visualizer::GetTrajectoryTxt(
     std::vector<std::vector<std::string> >& lines, TrajectoryType trajectory_type){
-  nav_msgs::Path* path_ptr;
+  nav_msgs::msg::Path* path_ptr;
   switch(trajectory_type){
     case TrajectoryType::Frame:
       path_ptr = &frame_pose_msgs;
@@ -176,7 +176,7 @@ void Visualizer::GetTrajectoryTxt(
       return;
   }
 
-  for(geometry_msgs::PoseStamped& pose_stamped : (*path_ptr).poses){
+  for(geometry_msgs::msg::PoseStamped& pose_stamped : (*path_ptr).poses){
     std::vector<std::string> line;
     int64_t sec = static_cast<int64_t>(pose_stamped.header.stamp.sec);
     int64_t nsec = static_cast<int64_t>(pose_stamped.header.stamp.nsec);

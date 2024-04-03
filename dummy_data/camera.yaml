@@ -1,0 +1,11 @@
+image_size: [640, 480]
+height: 0.09989 # m
+accurate_height: true
+intrinsics:
+  type: pinhole
+  data: [425.2405, 320.8785, 425.1050, 236.5892] # fx, cx, fy, cy
+distortion:
+  type: "" 
+  data: [-0.3222, 0.1492, -0.00053014, 0.00013470, -0.0422]  # k1 k2 p1 p2 k3
+extrinsics:
+  data: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]  # extrinsics matrix from camera pose to robot pose

@@ -1,7 +1,7 @@
 dataset:
-  dataroot: "/home/zheng/datasets/loopclosure/"
-  camera_config: "/home/zheng/datasets/loopclosure/camera.yaml"
-  image_dir_name: ""
+  dataroot: "/home/sags/final_project/Carpet3_seq1/"
+  camera_config: "/home/sags/final_project/src/ni-slam/dummy_data/camera.yaml"
+  image_dir_name: "rgb"
 
 correlation_flow:
   width: 448 #448  #640

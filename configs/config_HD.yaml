@@ -1,6 +1,6 @@
 dataset:
-  camera_config: /media/zheng/xukuanssd/NTU/ground_texture/HD_ground/camera.yaml
-  dataroot: /media/zheng/xukuanssd/NTU/ground_texture/HD_ground/ramp_rubber/database/seq0033
+  camera_config: /home/sags/final_project/src/ni-slam/dummy_data/camera.yaml
+  dataroot: /home/sags/final_project/Carpet3_seq1/
   image_dir_name: rgb
 
 correlation_flow:

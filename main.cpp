@@ -9,8 +9,8 @@
 
 // #include <ros/ros.h>
 // #include <ros/package.h>
-#include "rclcpp/rclcpp.hpp"
-#include <cv_bridge/cv_bridge.h>
+// #include "rclcpp/rclcpp.hpp"
+// #include <cv_bridge/cv_bridge.h>
 #include <opencv2/highgui/highgui.hpp>
 
 
@@ -21,7 +21,7 @@
 #include "map_stitcher.h"
 #include "map_builder.h"
 #include "thread_publisher.h"
-#include "visualization.h"
+// #include "visualization.h"
 
 #include <typeinfo>
 #include <sys/io.h>
@@ -31,8 +31,8 @@
 using namespace std;
 
 int main(int argc, char** argv){
-  rclcpp::init(argc, argv, "build_map");
-  rclcpp::start(); 
+  // rclcpp::init(argc, argv, "build_map");
+  // rclcpp::start(); 
 
   std::string config_file = argv[1];
   Configs configs(config_file);
@@ -41,16 +41,19 @@ int main(int argc, char** argv){
   Dataset dataset(dataset_config.dataroot, dataset_config.image_dir_name); 
 
   MapBuilder map_builder(configs); 
-  Visualizer visualizer(configs.visualization_config); 
+  // Visualizer visualizer(configs.visualization_config); 
   Aligned<std::vector, Eigen::Vector3d> frame_poses;
   std::vector<double> timestamps;
   Eigen::Vector3d new_kcc_pose; 
-  rclcpp::Rate loop_rate(50); 
+  // TODO: Find way to loop at rate
+  // rclcpp::Rate loop_rate(50); 
+  int loop_rate = 50;
+  int period_ms = 1000 / loop_rate;
   std::vector<std::vector<std::string> > frame_lines;
   size_t dataset_length = dataset.GetDatasetLength();
 
   for(size_t i = 0; i < dataset_length; ++i){ 
-    if(!ros::ok()) break; 
+    // if(!ros::ok()) break; 
     std::cout << i << std::endl;
     cv::Mat image;
     if(!dataset.GetImage(image, i)){
@@ -58,7 +61,7 @@ int main(int argc, char** argv){
       break;
     }
     double time_double = dataset.GetTimestamp(i);
-    visualizer.PublishImage(image, time_double);
+    // visualizer.PublishImage(image, time_double);
     auto t1 = std::chrono::high_resolution_clock::now();
     bool insert_keyframe = map_builder.AddNewInput(image, time_double); // error if image size is wrong
     auto t2 = std::chrono::high_resolution_clock::now();
@@ -74,16 +77,17 @@ int main(int argc, char** argv){
     std::cout << "Insert a keyframe !" << std::endl;
 
     // publish pose msgs
-    if(map_builder.GetCFPose(new_kcc_pose)){    
-      visualizer.UpdateKccPose(new_kcc_pose, time_double);
-    }
-    if(map_builder.GetFramePoses(frame_poses, timestamps)){
-      visualizer.UpdateFramePose(frame_poses, timestamps);
-    }
+    // if(map_builder.GetCFPose(new_kcc_pose)){    
+    //   visualizer.UpdateKccPose(new_kcc_pose, time_double);
+    // }
+    // if(map_builder.GetFramePoses(frame_poses, timestamps)){
+    //   visualizer.UpdateFramePose(frame_poses, timestamps);
+    // }
 
-    visualizer.UpdateMap(map_builder);
-    ros::spinOnce(); 
-    loop_rate.sleep(); 
+    // visualizer.UpdateMap(map_builder);
+    // ros::spinOnce(); 
+    // loop_rate.sleep(); 
+    std::this_thread::sleep_for(std::chrono::milliseconds(period_ms));
   }
 
   // save trajectories 
@@ -92,8 +96,8 @@ int main(int argc, char** argv){
   std::string trajectory_KCC = saving_root + "/KCC_Keyframe.txt";
   std::string trajectory_frame = saving_root + "/optimized_keyframe.txt";
   std::vector<std::vector<std::string> > kcc_keyframe_lines, optimized_keyframe_lines;
-  visualizer.GetTrajectoryTxt(kcc_keyframe_lines, Visualizer::TrajectoryType::KCC);
-  visualizer.GetTrajectoryTxt(optimized_keyframe_lines, Visualizer::TrajectoryType::Frame);
+  // visualizer.GetTrajectoryTxt(kcc_keyframe_lines, Visualizer::TrajectoryType::KCC);
+  // visualizer.GetTrajectoryTxt(optimized_keyframe_lines, Visualizer::TrajectoryType::Frame);
 
   WriteTxt(trajectory_KCC, kcc_keyframe_lines, " ");
   WriteTxt(trajectory_frame, optimized_keyframe_lines, " ");

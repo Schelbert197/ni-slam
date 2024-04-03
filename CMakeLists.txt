@@ -29,16 +29,16 @@ endif()
 # )
 find_package(ament_cmake REQUIRED)
 find_package(cv_bridge)
-find_package(geometry_msgs)
-find_package(visualization_msgs)
+# find_package(geometry_msgs)
+# find_package(visualization_msgs)
 find_package(image_transport)
-find_package(nav_msgs REQUIRED)
-find_package(rclcpp)
-find_package(rclpy)
-find_package(std_msgs)
-find_package(sensor_msgs)
-find_package(tf2 REQUIRED)
-find_package(tf2_ros REQUIRED)
+# find_package(nav_msgs REQUIRED)
+# find_package(rclcpp)
+# find_package(rclpy)
+# find_package(std_msgs)
+# find_package(sensor_msgs)
+# find_package(tf2 REQUIRED)
+# find_package(tf2_ros REQUIRED)
 
 find_package(OpenCV 4.2 REQUIRED)
 find_package(OpenMP REQUIRED)
@@ -60,7 +60,8 @@ find_package(VTK REQUIRED)
 # install(DIRECTORY include/ ############### TODO: CHECK IF NECESSARY!!
 #   DESTINATION include)
 # from CATKIN_DEPENDS
-ament_export_dependencies(geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
+# ament_export_dependencies(geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
+ament_export_dependencies(image_transport)
 # from catkin INCLUDE_DIRS
 ament_export_include_directories(include)
 # from LIBRARIES
@@ -99,7 +100,7 @@ add_library(${PROJECT_NAME}_lib SHARED
   src/map_builder.cc
   src/thread_publisher.cc
   src/map_stitcher.cc
-  src/visualization.cc
+  # src/visualization.cc
   src/timer.cc
 )
 
@@ -113,18 +114,19 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${Boost_LIBRARIES}
   # ${catkin_LIBRARIES}
   ${VTK_LIBRARIES}
-  nav_msgs
-  geometry_msgs
-  visualization_msgs
-  image_transport
-  nav_msgs
-  std_msgs
+  # nav_msgs
+  # geometry_msgs
+  # visualization_msgs
+  # image_transport
+  # nav_msgs
+  # std_msgs
 )
 ament_export_libraries(correlation_flow)
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME} main.cpp)
-ament_target_dependencies(${PROJECT_NAME} geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
+# ament_target_dependencies(${PROJECT_NAME} geometry_msgs visualization_msgs image_transport nav_msgs rclcpp rclpy std_msgs)
+ament_target_dependencies(${PROJECT_NAME} image_transport)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
 
 # target_include_directories(${PROJECT_NAME} PUBLIC

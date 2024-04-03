@@ -46,4 +46,4 @@ visualization:
 
 saving:
   save_pose: true
-  saving_root: /home/xukuan/debug/kcc
+  saving_root: /home/sags/final_project/src/ni-slam/results

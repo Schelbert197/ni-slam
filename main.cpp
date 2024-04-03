@@ -91,6 +91,7 @@ int main(int argc, char** argv){
   }
 
   // save trajectories 
+  std::cout << "Saving data..." << std::endl;
   std::string saving_root = configs.saving_config.saving_root;
   MakeDir(saving_root);
   std::string trajectory_KCC = saving_root + "/KCC_Keyframe.txt";

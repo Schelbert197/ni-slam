@@ -1,4 +1,4 @@
-#include "visualization.hpp"
+#include "viz.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -8,18 +8,24 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <time.h>
 
+
+
 #include <iostream>
 
 using namespace std;
 
-Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
+class Visualizer : public rclcpp::Node
+{
+  public:
+  Visualizer(VisualizationConfig& config): frame_id(config.frame_id) : Node("visualizer")
+  {
   odom_pose_pub = this->create_publisher<nav_msgs::msg::Path>(config.odom_pose_topic, 10);
   kcc_pose_pub = this->create_publisher<nav_msgs::msg::Path>(config.kcc_pose_topic, 10);
   frame_pose_pub = this->create_publisher<nav_msgs::msg::Path>(config.frame_pose_topic, 10);
   map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>(config.map_topic, 1);
   image_pub = this->create_publisher<sensor_msgs::msg::Image>(config.image_topic, 1);
 
-  rclcpp::Time current_time = this->now();
+  rclcpp::Time current_time = rclcpp::Time::now();
   odom_pose_msgs.header.stamp = current_time; 
 	odom_pose_msgs.header.frame_id = frame_id; 
   kcc_pose_msgs.header.stamp = current_time; 
@@ -194,3 +200,4 @@ void Visualizer::GetTrajectoryTxt(
   }
 }
 
+}

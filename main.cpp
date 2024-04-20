@@ -156,7 +156,7 @@ int main(int argc, char** argv){
     auto compute_time = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1e3;
     cout << "processing for one frame is " << compute_time << "ms" << endl;
 
-    
+    std::cout << "Lopp" << endl;
     if((i + 1) >= dataset_length){
       map_builder.CheckAndOptimize();
     }else if(!insert_keyframe){
@@ -167,11 +167,14 @@ int main(int argc, char** argv){
     // publish pose msgs
     if(map_builder.GetCFPose(new_kcc_pose)){    
       visualizer.UpdateKccPose(new_kcc_pose, time_double);
+      std::cout << new_kcc_pose << std::endl;
     }
     if(map_builder.GetFramePoses(frame_poses, timestamps)){
+      // std::cout << timestamps << std::endl;
       visualizer.UpdateFramePose(frame_poses, timestamps);
     }
 
+    std::cout << "Skipped if statements" << std::endl;
     // visualizer.UpdateMap(map_builder);
     // ros::spinOnce(); 
     // loop_rate.sleep(); 
@@ -321,4 +324,5 @@ MyOrientation euler_to_quaternion(float yaw, float pitch, float roll){
       std::sin(roll/2) * std::sin(pitch/2) * std::cos(yaw/2);
   q.w = std::cos(roll/2) * std::cos(pitch/2) * std::cos(yaw/2) + \
       std::sin(roll/2) * std::sin(pitch/2) * std::sin(yaw/2);
+  return q;
 }

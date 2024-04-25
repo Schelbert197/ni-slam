@@ -88,7 +88,7 @@ void ReadTxt(const std::string& file_path,
 void WriteTxt(const std::string file_path, 
     std::vector<std::vector<std::string> >& lines, std::string seq){
   std::fstream file;
-  file.open(file_path.c_str(), std::ios::out|std::ios::app);
+  file.open(file_path.c_str(), std::ios::out); //std::ios::app);
   if(!file.good()){
     std::cout << "Error: cannot open file " << file_path << std::endl;
     exit(0);

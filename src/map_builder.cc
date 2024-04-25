@@ -242,6 +242,8 @@ bool MapBuilder::OptimizeMap(){
       continue;
     }
 
+    std::cout << "vec size scale data:" << scale_data.size() << '\n';
+
     ceres::optimization_2d::Constraint2d constraint;
     constraint.id_begin = from;
     constraint.id_end = to;

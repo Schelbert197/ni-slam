@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(ni_slam)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -122,6 +122,10 @@ target_link_libraries(${PROJECT_NAME}_lib
   # std_msgs
 )
 ament_export_libraries(correlation_flow)
+
+if(NOT CMAKE_BUILD_TYPE)        # If no build type is set, set one
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Type of build." FORCE)
+endif()
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME} main.cpp)

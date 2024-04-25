@@ -23,6 +23,13 @@ void Map::AddFrame(FramePtr& frame){
   int frame_id = frame->GetFrameId();
   _frames[frame_id] = frame;
 
+  // Get size of frames
+  int mem = 0;
+  for (const auto& [id, frame_lkj]: _frames){
+    mem += frame_lkj->GetMemFootprint();
+  }
+  std::cout << "Memory Footprint (bytes): " << mem << endl;
+
   Eigen::Vector3d pose;
   frame->GetPose(pose);
   GridLocation grid_location = ComputeGridLocation(pose);

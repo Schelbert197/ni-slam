@@ -18,6 +18,7 @@ void MapStitcher::InsertFrame(FramePtr frame, cv::Mat& image){
   Eigen::MatrixXi matrix;
   cv::cv2eigen(norm_image, matrix);
   _raw_images[frame] = matrix;
+  std::cout << "Raw img size bytes :" << _raw_images.size() * matrix.size() * sizeof(int) << endl;
   AddImageToOccupancy(frame);
 }
 

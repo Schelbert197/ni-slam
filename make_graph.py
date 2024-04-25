@@ -47,6 +47,8 @@ def read_pose_data(filename):
 # Read data from text files
 x1, y1, orientation1 = read_pose_data('results/KCC_Keyframe.txt')
 x2, y2, orientation2 = read_pose_data('results/optimized_keyframe.txt')
+x3, y3, orientation3 = read_pose_data(
+    '/home/sags/final_project/Carpet3_seq1/ground_truth.txt')
 
 answer = False
 if answer is True:
@@ -74,6 +76,7 @@ else:
     plt.figure(figsize=(10, 6))
     plt.plot(x1, y1, label='KCC Keyframe', color='r')
     plt.plot(x2, y2, label='Optimized Keyframe', color='g')
+    plt.plot(x3, y3, label='Ground Truth', color='b')
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('Pose Variation over Time')

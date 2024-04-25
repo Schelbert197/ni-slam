@@ -139,8 +139,9 @@ int main(int argc, char** argv){
   int period_ms = 1000 / loop_rate;
   std::vector<std::vector<std::string> > frame_lines;
   size_t dataset_length = dataset.GetDatasetLength();
+  // size_t dataset_length = 300;
 
-  for(size_t i = 0; i < dataset_length; ++i){ 
+  for(size_t i = 0; i < dataset_length; i+=3){ 
     // if(!ros::ok()) break; 
     std::cout << i << std::endl;
     cv::Mat image;
@@ -156,9 +157,10 @@ int main(int argc, char** argv){
     auto compute_time = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1e3;
     cout << "processing for one frame is " << compute_time << "ms" << endl;
 
-    std::cout << "Lopp" << endl;
     if((i + 1) >= dataset_length){
+      std::cout << "check and optimzie" << std::endl;
       map_builder.CheckAndOptimize();
+      std::cout << "OPTIMIZED" << "\n";
     }else if(!insert_keyframe){
       continue;
     };  
@@ -174,7 +176,6 @@ int main(int argc, char** argv){
       visualizer.UpdateFramePose(frame_poses, timestamps);
     }
 
-    std::cout << "Skipped if statements" << std::endl;
     // visualizer.UpdateMap(map_builder);
     // ros::spinOnce(); 
     // loop_rate.sleep(); 
@@ -185,8 +186,8 @@ int main(int argc, char** argv){
   std::cout << "Saving data..." << std::endl;
   std::string saving_root = configs.saving_config.saving_root;
   MakeDir(saving_root);
-  std::string trajectory_KCC = saving_root + "/KCC_Keyframe.txt";
-  std::string trajectory_frame = saving_root + "/optimized_keyframe.txt";
+  std::string trajectory_KCC = saving_root + "/KCC_Keyframe4.txt";
+  std::string trajectory_frame = saving_root + "/optimized_keyframe4.txt";
   std::vector<std::vector<std::string> > kcc_keyframe_lines, optimized_keyframe_lines;
   visualizer.GetTrajectoryTxt(kcc_keyframe_lines, Visualizer::TrajectoryType::KCC);
   visualizer.GetTrajectoryTxt(optimized_keyframe_lines, Visualizer::TrajectoryType::Frame);
@@ -209,11 +210,32 @@ Visualizer::Visualizer(VisualizationConfig& config): frame_id(config.frame_id){
   kcc_pose_msgs.header.stamp = current_time; 
 	kcc_pose_msgs.header.frame_id = frame_id; 
   frame_pose_msgs.header.stamp = current_time; 
-	frame_pose_msgs.header.frame_id = frame_id; 
+	frame_pose_msgs.header.frame_id = frame_id;
 
 //   occupancy_map_msgs.header.stamp = current_time;
 //   occupancy_map_msgs.header.frame_id = frame_id;
 }
+
+// void Visualizer::UpdateMap(MapBuilder& map_builder){
+//   occupancy_map_msgs.info.resolution = map_builder.GetMapResolution();
+//   OccupancyData map_data = map_builder.GetMapData();
+//   if(map_data.size() < 1) return;
+//   ConvertMapToOccupancyMsgs(map_data, occupancy_map_msgs);
+
+//   Eigen::Matrix<double, 7, 1> real_origin;
+//   Eigen::Vector3d pixel_origin;
+//   pixel_origin << occupancy_map_msgs.info.origin.position.x, occupancy_map_msgs.info.origin.position.y, occupancy_map_msgs.info.origin.position.z;
+//   map_builder.GetOccupancyMapOrigin(pixel_origin, real_origin);
+//   occupancy_map_msgs.info.origin.orientation.w = real_origin(0, 0);
+//   occupancy_map_msgs.info.origin.orientation.x = real_origin(1, 0);
+//   occupancy_map_msgs.info.origin.orientation.y = real_origin(2, 0);
+//   occupancy_map_msgs.info.origin.orientation.z = real_origin(3, 0);
+//   occupancy_map_msgs.info.origin.position.x = real_origin(4, 0);
+//   occupancy_map_msgs.info.origin.position.y = real_origin(5, 0);
+//   occupancy_map_msgs.info.origin.position.z = real_origin(6, 0);
+
+//   map_pub.publish(occupancy_map_msgs);
+// }
 
 void Visualizer::GetTrajectoryTxt(
     std::vector<std::vector<std::string> >& lines, TrajectoryType trajectory_type){

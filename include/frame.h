@@ -28,6 +28,15 @@ public:
   void GetEdgeIds(std::vector<int>& edge_ids);
   void SaveToDisk(const std::string root_dir);
 
+  // Helper to debug size issue
+  inline int GetMemFootprint(){
+    int mysize = _frame.size() * sizeof(float);
+    int mysize2 = _fft_result.size() * sizeof(std::complex<float>);
+    int mysize3 = _fft_polar.size() * sizeof(std::complex<float>); 
+    int mysize4 = _depth_fft_result.size() * sizeof(std::complex<float>);
+    return mysize + mysize2 + mysize3 + mysize4; 
+  }
+
 private:
   int _frame_id;
   double _timestamp;
